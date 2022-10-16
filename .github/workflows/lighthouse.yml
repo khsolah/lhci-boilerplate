@@ -48,7 +48,7 @@ jobs:
             ./node_modules
           key: ${{ runner.os }}-yarn-
       - name: download dist artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: dist-artifacts
       - run: |
