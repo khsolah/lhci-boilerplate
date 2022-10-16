@@ -21,7 +21,7 @@ jobs:
         id: yarn-cache
         with:
           path: |
-            **/node_modules
+            ./node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -34,6 +34,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: |
           npm install -g @lhci/cli@0.9.0
           lhci autorun
