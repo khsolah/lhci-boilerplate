@@ -51,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist-artifacts
+          path: ./dist
       - run: |
           npm install -g @lhci/cli@0.9.0
           lhci autorun
