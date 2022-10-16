@@ -30,6 +30,27 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile --check-files
       - run: yarn build
+      - name: upload dist artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-artifacts
+          path: |
+            dist
+  lhci:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: |
+            ./node_modules
+          key: ${{ runner.os }}-yarn-
+      - name: download dist artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-artifacts
       - run: |
           npm install -g @lhci/cli@0.9.0
           lhci autorun
