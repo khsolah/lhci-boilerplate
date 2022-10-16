@@ -29,3 +29,6 @@ coverage
 
 # lint cache
 .eslintcache
+
+# lighthouse reports
+.lighthouseci
