@@ -1,0 +1,40 @@
+name: Lighthouse-CI
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'release'
+  push:
+    branches:
+      - 'main'
+      - 'release'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.13.0
+      - uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - run: npm install -g yarn
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --check-files
+      - run: yarn build
+  lhci:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          npm install -g @lhci/cli@0.9.0
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
