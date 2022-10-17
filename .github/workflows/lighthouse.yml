@@ -10,7 +10,7 @@ on:
       - 'release'
   workflow_dispatch:
 jobs:
-  build:
+  lighthouse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,30 +30,9 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile --check-files
       - run: yarn build
-      - name: upload dist artifacts
-        uses: actions/upload-artifact@v3
+      - uses: treosh/lighthouse-ci-action@v9
         with:
-          name: dist-artifacts
-          path: |
-            dist
-  lhci:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        id: restore-build
-        with:
-          path: |
-            ./node_modules
-          key: ${{ runner.os }}-yarn-
-      - name: download dist artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: dist-artifacts
-          path: ./dist
-      - run: |
-          npm install -g @lhci/cli@0.9.0
-          lhci autorun
+          configPath: './.lighthouserc.json'
+          uploadArtifacts: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
