@@ -18,6 +18,10 @@
     "collect": {
       "url": ["http://localhost/"],
       "staticDistDir": "dist"
+    },
+    "upload": {
+      "target": "temporary-public-storage",
+      "uploadUrlMap": true
     }
   }
 }
